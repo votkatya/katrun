@@ -188,8 +188,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const width  = 24 + Math.floor(rand(0, 18));
     const minDist = state.coins >= 30 ? 30 : 60; const maxDist = 200; const offsetX = rand(minDist, maxDist);
     obstacles.push({ x: canvas.clientWidth + 40 + offsetX, y: baseY - height, w: width, h: height });
-    const coinCount = Math.floor(rand(1, 4));
-    for(let i = 0; i < coinCount; i++){ const coinX = canvas.clientWidth + rand(100, 400); const coinY = baseY - rand(50, 140); coins.push({ x: coinX, y: coinY, r: 9 }); }
+    const coinCount = Math.floor(rand(1, 2));
+    const spacing = 40;
+    const startX = canvas.clientWidth + rand(100, 400);
+    for(let i = 0; i < coinCount; i++){
+      const coinX = startX + i * spacing;
+      const coinY = baseY - rand(50, 140);
+      coins.push({ x: coinX, y: coinY, r: 9 });
+    }
   }
 
   // ===== Параллакс =====
