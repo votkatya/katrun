@@ -202,7 +202,7 @@ window.addEventListener('DOMContentLoaded', () => {
     for(let i = 0; i < coinCount; i++){
       const coinX = startX + i * spacing;
       const coinY = baseY - rand(50, 140);
-      coins.push({ x: coinX, y: coinY, r: 9, type: state.rng() < 0.1 ? 'red' : 'yellow' });
+      coins.push({ x: coinX, y: coinY, r: 9, type: state.rng() < 0.3 ? 'red' : 'yellow' });
     }
   }
 
