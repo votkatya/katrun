@@ -174,8 +174,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Подбор монет
     let picked = 0;
-    for(let i = coins.length - 1; i >= 0; i--){ const c = coins[i]; if(circleRectIntersect(c.x, c.y, c.r, player.x(), player.y, player.w, player.h)){ coins.splice(i, 1); state.coins++; picked++; } }
-    if(picked>0) updateProgressHUD();
+    for(let i = coins.length - 1; i >= 0; i--){
+      const c = coins[i];
+      if(circleRectIntersect(c.x, c.y, c.r, player.x(), player.y, player.w, player.h)){
+        coins.splice(i, 1);
+        const val = c.type === 'red' ? -3 : 1;
+        state.coins += val;
+        picked += val;
+      }
+    }
+    if(picked !== 0) updateProgressHUD();
 
     // Удаляем ушедшие
     while(obstacles[0] && obstacles[0].x + obstacles[0].w < -50) obstacles.shift();
@@ -194,7 +202,7 @@ window.addEventListener('DOMContentLoaded', () => {
     for(let i = 0; i < coinCount; i++){
       const coinX = startX + i * spacing;
       const coinY = baseY - rand(50, 140);
-      coins.push({ x: coinX, y: coinY, r: 9 });
+      coins.push({ x: coinX, y: coinY, r: 9, type: state.rng() < 0.1 ? 'red' : 'yellow' });
     }
   }
 
@@ -232,7 +240,12 @@ window.addEventListener('DOMContentLoaded', () => {
   function draw(){
     const w = canvas.clientWidth, h = canvas.clientHeight; ctx.clearRect(0, 0, w, h); drawParallax(w, h);
     ctx.strokeStyle = getCSS('--muted'); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, GROUND_Y() + 0.5); ctx.lineTo(w, GROUND_Y() + 0.5); ctx.stroke();
-    for(const c of coins){ ctx.fillStyle = getCSS('--accent'); ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2); ctx.fill(); }
+    for(const c of coins){
+      ctx.fillStyle = c.type === 'red' ? getCSS('--danger') : getCSS('--accent');
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
     for(const o of obstacles){ ctx.fillStyle = getCSS('--danger'); ctx.fillRect(o.x, o.y, o.w, o.h); }
     drawPixelDude(player.x(), player.y, player.w, player.h, player.frame, !player.onGround);
   }
