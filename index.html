@@ -71,6 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   const coinsValueEl = document.getElementById('coinsValue');
   const levelNameEl = document.getElementById('levelValue');
+  let bestScore = Number(localStorage.getItem('bestScore')) || 0;
 
   // ===== Облака (статичные) =====
   let cloudsFar = [], cloudsMid = [], cloudsNear = [];
@@ -267,7 +268,15 @@ window.addEventListener('DOMContentLoaded', () => {
   function updateProgressHUD(){ coinsValueEl.textContent = state.coins; levelNameEl.textContent = getLevelName(state.coins); }
 
   // ===== Game over / Restart =====
-  function gameOver(){ state.running = false; const levelName = getLevelName(state.coins); gameoverEl.innerHTML = `<div class=\"gameover-card\"><div class=\"gameover-title\">Всё!</div><div class=\"gameover-sub\">Вы заработали <strong>${state.coins}</strong> монет</div><div class=\"gameover-sub\">Ваш уровень: <strong>${levelName}</strong></div><button id=\"retryBtn\" class=\"btn btn-accent\" type=\"button\">Ещё раз</button></div>`; gameoverEl.style.display='flex'; const retryBtn = document.getElementById('retryBtn'); if(retryBtn){ retryBtn.addEventListener('click', () => { gameoverEl.style.display='none'; started = true; restart(); }); } }
+  function gameOver(){
+    state.running = false;
+    const levelName = getLevelName(state.coins);
+    if(state.coins > bestScore){ bestScore = state.coins; localStorage.setItem('bestScore', bestScore); }
+    gameoverEl.innerHTML = `<div class=\"gameover-card\"><div class=\"gameover-title\">Всё!</div><div class=\"gameover-sub\">Вы заработали <strong>${state.coins}</strong> монет</div><div class=\"gameover-sub\">Ваш уровень: <strong>${levelName}</strong></div><div class=\"gameover-sub\">Рекорд: <strong>${bestScore}</strong></div><button id=\"retryBtn\" class=\"btn btn-accent\" type=\"button\">Ещё раз</button></div>`;
+    gameoverEl.style.display='flex';
+    const retryBtn = document.getElementById('retryBtn');
+    if(retryBtn){ retryBtn.addEventListener('click', () => { gameoverEl.style.display='none'; started = true; restart(); }); }
+  }
   function restart(){ obstacles.length=0; coins.length=0; state.running=true; state.coins=0; state.time=0; state.lastSpawn=0; state.scroll=0; player.y=GROUND_Y()-player.h; player.vy=0; player.onGround=true; player.frame=0; player.frameTime=0; updateProgressHUD(); spawnChunk(); }
 
   // ===== Геометрия =====
