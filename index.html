@@ -98,6 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const GROUND_Y = () => canvas.clientHeight * 0.8;
   const GRAVITY = 0.8;
   const JUMP_VELOCITY = -14;
+  const MAX_JUMP_HEIGHT = Math.abs(JUMP_VELOCITY) ** 2 / (2 * GRAVITY);
   const SCROLL_SPEED_BASE = 6;
   const SPAWN_INTERVAL_MIN = 1400;
   const SPAWN_INTERVAL_MAX = 2000;
@@ -196,13 +197,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const width  = 24 + Math.floor(rand(0, 18));
     const minDist = state.coins >= 30 ? 30 : 60; const maxDist = 200; const offsetX = rand(minDist, maxDist);
     obstacles.push({ x: canvas.clientWidth + 40 + offsetX, y: baseY - height, w: width, h: height });
-    const coinCount = Math.floor(rand(1, 2));
-    const spacing = 40;
-    const startX = canvas.clientWidth + rand(100, 400);
-    for(let i = 0; i < coinCount; i++){
-      const coinX = startX + i * spacing;
-      const coinY = baseY - rand(50, 140);
-      coins.push({ x: coinX, y: coinY, r: 9, type: state.rng() < 0.3 ? 'red' : 'yellow' });
+    const curr = obstacles[obstacles.length - 1];
+    const prev = obstacles[obstacles.length - 2];
+    if(prev && curr){
+      const gapStart = prev.x + prev.w;
+      const gapEnd = curr.x;
+      const margin = 12;
+      if(gapEnd - gapStart > margin * 2){
+        const coinX = gapStart + margin + (gapEnd - gapStart - margin * 2) / 2;
+        const type = state.rng() < 0.3 ? 'red' : 'yellow';
+        const coinY = baseY - rand(player.h + 10, Math.min(player.h + MAX_JUMP_HEIGHT - 10, player.h + 140));
+        coins.push({ x: coinX, y: coinY, r: 9, type });
+      }
     }
   }
 
