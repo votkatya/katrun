@@ -259,9 +259,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Спрайт персонажа
-  const RUN0 = ['000011100000','000111110000','000111110000','000011100000','000022200000','000022200000','000222220000','000022200000','000222220000','000020200000','000020200000','000030000000','000030000000','000030000000','000300000000','000300000000'];
-  const RUN1 = ['000011100000','000111110000','000111110000','000011100000','000022200000','000022200000','000222220000','000022200000','000222220000','000020200000','000020200000','003000000000','003000000000','000300000000','000000300000','000000300000'];
-  function drawPixelDude(x,y,w,h,frame,isJump){ const grid = (frame === 0 || isJump) ? RUN0 : RUN1; const colSkin = '#f1c27d', colBody = getCSS('--brand'), colLegs = '#8b8b94'; const cols = 12, rows = 16; const sx = w/cols, sy = h/rows; ctx.save(); ctx.imageSmoothingEnabled = false; for(let r=0;r<rows;r++){ const line = grid[r]; for(let c=0;c<cols;c++){ const code=line[c]; if(code==='0') continue; ctx.fillStyle = (code==='1') ? colSkin : (code==='2') ? colBody : colLegs; ctx.fillRect(Math.floor(x + c*sx), Math.floor(y + r*sy), Math.ceil(sx), Math.ceil(sy)); } } ctx.restore(); }
+  const RUN0 = ['000011100000','000111110000','000111110000','000011100000','000022200000','000022200000','000222220000','000022200000','000222220000','000020214440','000020144400','000030044400','000030000000','000030000000','000300000000','000300000000'];
+  const RUN1 = ['000011100000','000111110000','000111110000','000011100000','000022200000','000022200000','000222220000','000022200000','000222220000','000020214440','000020144400','003000044400','003000000000','000300000000','000000300000','000000300000'];
+  function drawPixelDude(x,y,w,h,frame,isJump){ const grid = (frame === 0 || isJump) ? RUN0 : RUN1; const colSkin = '#f1c27d', colShirt = '#ffffff', colLegs = '#333333', colCase = '#5c4433'; const cols = 12, rows = 16; const sx = w/cols, sy = h/rows; ctx.save(); ctx.imageSmoothingEnabled = false; for(let r=0;r<rows;r++){ const line = grid[r]; for(let c=0;c<cols;c++){ const code=line[c]; if(code==='0') continue; ctx.fillStyle = (code==='1') ? colSkin : (code==='2') ? colShirt : (code==='3') ? colLegs : colCase; ctx.fillRect(Math.floor(x + c*sx), Math.floor(y + r*sy), Math.ceil(sx), Math.ceil(sy)); } } ctx.restore(); }
 
   // ===== HUD =====
   function getLevelName(coins){ let name = levels[0].name; for(const l of levels){ if(coins >= l.min) name = l.name; } return name; }
