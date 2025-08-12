@@ -13,8 +13,7 @@
   /* HUD */
   .hud{position:fixed;inset:0;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding:16px}
   .hud .row{position:relative;width:min(100vw,100vh*16/9)}
-  #progressCenter{position:absolute;left:50%;top:0;transform:translateX(-50%);display:inline-flex;gap:16px;align-items:center;background:rgba(21,22,26,.9);border:1px solid #1e1f25;border-radius:12px;padding:8px 14px;font-weight:700;box-shadow:0 6px 20px var(--shadow)}
-  #progressCenter .dot{width:6px;height:6px;border-radius:50%;background:#3a3f4d}
+  #progressCenter{position:absolute;left:50%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:rgba(21,22,26,.9);border:1px solid #1e1f25;border-radius:12px;padding:10px 16px;font-weight:700;font-size:18px;box-shadow:0 6px 20px var(--shadow)}
   #progressCenter img{width:20px;height:20px;margin-right:6px}
   .hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#9aa0a6;font-size:14px}
 
@@ -50,8 +49,8 @@
   <div class="row">
       <div id="progressCenter" aria-live="polite">
         <span id="coins"><img src="assets/coin.svg" alt=""> Монеты: <span id="coinsValue">0</span></span>
-        <span class="dot" aria-hidden="true"></span>
         <span id="level"><img src="assets/level.svg" alt=""> Уровень: <span id="levelValue">Ларёк</span></span>
+        <span id="record"><img src="assets/record.svg" alt=""> Рекорд: <span id="recordValue">0</span></span>
       </div>
   </div>
   <div class="hint">Пробел / ↑ / тап — прыгать • R — рестарт</div>
@@ -71,6 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   const coinsValueEl = document.getElementById('coinsValue');
   const levelNameEl = document.getElementById('levelValue');
+  const recordValueEl = document.getElementById('recordValue');
   let bestScore = Number(localStorage.getItem('bestScore')) || 0;
 
   // ===== Облака (статичные) =====
@@ -265,13 +265,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // ===== HUD =====
   function getLevelName(coins){ let name = levels[0].name; for(const l of levels){ if(coins >= l.min) name = l.name; } return name; }
-  function updateProgressHUD(){ coinsValueEl.textContent = state.coins; levelNameEl.textContent = getLevelName(state.coins); }
+  function updateProgressHUD(){ coinsValueEl.textContent = state.coins; levelNameEl.textContent = getLevelName(state.coins); recordValueEl.textContent = bestScore; }
 
   // ===== Game over / Restart =====
   function gameOver(){
     state.running = false;
     const levelName = getLevelName(state.coins);
     if(state.coins > bestScore){ bestScore = state.coins; localStorage.setItem('bestScore', bestScore); }
+    updateProgressHUD();
     gameoverEl.innerHTML = `<div class=\"gameover-card\"><div class=\"gameover-title\">Всё!</div><div class=\"gameover-sub\">Вы заработали <strong>${state.coins}</strong> монет</div><div class=\"gameover-sub\">Ваш уровень: <strong>${levelName}</strong></div><div class=\"gameover-sub\">Рекорд: <strong>${bestScore}</strong></div><button id=\"retryBtn\" class=\"btn btn-accent\" type=\"button\">Ещё раз</button></div>`;
     gameoverEl.style.display='flex';
     const retryBtn = document.getElementById('retryBtn');
